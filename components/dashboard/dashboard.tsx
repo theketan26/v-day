@@ -64,13 +64,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">Your Romantic Apps</h1>
-            <p className="text-muted-foreground">Create and manage your personalized romantic experiences</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Your Romantic Apps</h1>
+            <p className="text-gray-600">Create and manage your personalized romantic experiences</p>
           </div>
           <Button variant="outline" size="lg" onClick={handleLogout} className="gap-2">
             <LogOut className="w-4 h-4" />
@@ -80,7 +80,7 @@ export default function Dashboard() {
 
         {/* Create New App Button */}
         <div className="mb-8">
-          <Button size="lg" onClick={() => setShowNewAppModal(true)} className="gap-2">
+          <Button size="lg" onClick={() => setShowNewAppModal(true)} className="gap-2 bg-pink-500 text-white hover:bg-pink-600">
             <Plus className="w-5 h-5" />
             Create New App
           </Button>
@@ -92,8 +92,8 @@ export default function Dashboard() {
             {[...Array(3)].map((_, i) => (
               <Card key={i} className="animate-pulse">
                 <CardHeader>
-                  <div className="h-6 bg-muted rounded mb-2" />
-                  <div className="h-4 bg-muted rounded w-2/3" />
+                  <div className="h-6 bg-gray-200 rounded mb-2" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
                 </CardHeader>
               </Card>
             ))}
@@ -105,7 +105,7 @@ export default function Dashboard() {
               <CardDescription>Create your first romantic app to get started</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => setShowNewAppModal(true)} className="gap-2">
+              <Button onClick={() => setShowNewAppModal(true)} className="gap-2 bg-pink-500 text-white hover:bg-pink-600">
                 <Plus className="w-4 h-4" />
                 Create Your First App
               </Button>

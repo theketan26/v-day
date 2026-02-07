@@ -10,7 +10,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Heart className="w-6 h-6 text-pink-500 fill-pink-500" />
-            <span className="text-xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-pink-600">
               Romantic Apps
             </span>
           </div>
@@ -19,7 +19,7 @@ export default function HomePage() {
               <Button variant="ghost">Sign In</Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-gradient-romantic text-white hover:opacity-90">
+              <Button className="bg-pink-500 text-white hover:bg-pink-600">
                 Get Started
               </Button>
             </Link>
@@ -35,7 +35,7 @@ export default function HomePage() {
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium">Create Magic, Share Love</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl font-bold text-pink-600">
               Create Beautiful Romantic Experiences
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
@@ -45,12 +45,12 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
-              <Button size="lg" className="bg-gradient-romantic text-white hover:opacity-90 px-8">
+              <Button size="lg" className="bg-pink-500 text-white hover:bg-pink-600 px-8">
                 Create Your First App
               </Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="border-pink-200 px-8">
+              <Button size="lg" variant="outline" className="border-pink-200 text-gray-700 px-8">
                 Sign In
               </Button>
             </Link>

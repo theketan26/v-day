@@ -112,7 +112,15 @@
   background: linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #fda4af 100%);
 }
 
+.bg-gradient-romantic {
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #fda4af 100%);
+}
+
 .gradient-romantic-light {
+  background: linear-gradient(135deg, #fbcfe8 0%, #fda4af 50%, #fecdd3 100%);
+}
+
+.bg-gradient-romantic-light {
   background: linear-gradient(135deg, #fbcfe8 0%, #fda4af 50%, #fecdd3 100%);
 }
 

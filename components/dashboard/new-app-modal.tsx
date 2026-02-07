@@ -101,7 +101,7 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
 
   return (
     <Dialog open={isOpen} onOpenChange={handleReset}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl w-full mx-4">
         <DialogHeader>
           <DialogTitle>Create a New Romantic App</DialogTitle>
           <DialogDescription>
@@ -111,17 +111,17 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-6">
+        <div className="py-6 px-6">
           {step === 'select-template' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {templates.map(template => (
                 <Card
                   key={template.id}
-                  className="p-4 cursor-pointer hover:border-primary hover:shadow-lg transition-all"
+                  className="p-4 cursor-pointer hover:border-pink-300 hover:shadow-lg transition-all border-pink-100"
                   onClick={() => handleSelectTemplate(template.id)}
                 >
                   <h3 className="font-semibold text-lg mb-2">{template.name}</h3>
-                  <p className="text-sm text-muted-foreground">{template.description}</p>
+                  <p className="text-sm text-gray-600">{template.description}</p>
                 </Card>
               ))}
             </div>
@@ -138,23 +138,23 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
                   autoFocus
                 />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-600">
                 This title will be used in your app and help you organize your creations.
               </p>
             </div>
           )}
         </div>
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex gap-3 justify-end px-6 py-4 border-t border-gray-200">
           <Button variant="outline" onClick={handleReset}>
             {step === 'name' ? 'Back' : 'Cancel'}
           </Button>
           {step === 'select-template' ? (
-            <Button disabled>
+            <Button disabled className="bg-gray-300 text-gray-500">
               Next
             </Button>
           ) : (
-            <Button onClick={handleCreateApp} disabled={!appTitle.trim() || isLoading}>
+            <Button onClick={handleCreateApp} disabled={!appTitle.trim() || isLoading} className="bg-pink-500 text-white hover:bg-pink-600">
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Create App
             </Button>

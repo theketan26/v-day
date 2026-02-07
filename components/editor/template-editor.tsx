@@ -168,7 +168,7 @@ export function TemplateEditor({ templateId }: TemplateEditorProps) {
                   <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex-1 bg-gradient-romantic text-white hover:opacity-90"
+                    className="flex-1 bg-pink-500 text-white hover:bg-pink-600"
                   >
                     {isSaving ? (
                       <>
@@ -194,7 +194,7 @@ export function TemplateEditor({ templateId }: TemplateEditorProps) {
                 <CardTitle className="text-lg">Preview</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-square bg-gradient-romantic-light rounded-lg flex items-center justify-center">
+                <div className="aspect-square bg-pink-100 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <h2 className="text-xl font-bold text-pink-700 mb-2">
                       {title || 'Your App Title'}

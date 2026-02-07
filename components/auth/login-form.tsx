@@ -57,7 +57,7 @@ export function LoginForm() {
           <div className="flex justify-center mb-2">
             <Heart className="w-10 h-10 text-pink-500 fill-pink-500" />
           </div>
-          <CardTitle className="text-2xl bg-gradient-romantic bg-clip-text text-transparent">
+          <CardTitle className="text-2xl text-pink-600">
             Welcome Back
           </CardTitle>
           <CardDescription>Sign in to your romantic app account</CardDescription>
@@ -95,7 +95,7 @@ export function LoginForm() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-romantic text-white hover:opacity-90"
+              className="w-full bg-pink-500 text-white hover:bg-pink-600"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>

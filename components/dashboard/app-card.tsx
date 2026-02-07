@@ -70,13 +70,13 @@ export default function AppCard({ app, onDeleted }: AppCardProps) {
         <div className="space-y-4">
           {/* Share Link */}
           <div>
-            <p className="text-sm font-medium text-muted-foreground mb-2">Share Link</p>
+            <p className="text-sm font-medium text-gray-600 mb-2">Share Link</p>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={publicUrl}
                 readOnly
-                className="flex-1 px-3 py-2 text-sm bg-muted rounded border text-muted-foreground"
+                className="flex-1 px-3 py-2 text-sm bg-gray-100 rounded border border-gray-300 text-gray-600"
               />
               <Button
                 size="sm"
@@ -106,10 +106,9 @@ export default function AppCard({ app, onDeleted }: AppCardProps) {
             </Link>
             <Button
               size="sm"
-              variant="destructive"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="gap-2"
+              className="gap-2 bg-red-500 text-white hover:bg-red-600"
             >
               <Trash2 className="w-4 h-4" />
             </Button>

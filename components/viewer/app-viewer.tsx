@@ -118,7 +118,7 @@ export function AppViewer({ passkey }: AppViewerProps) {
         {/* Header */}
         <div className="text-center mb-8 animate-slide-up">
           <Heart className="w-12 h-12 text-pink-500 fill-pink-500 mx-auto mb-4 animate-float" />
-          <h1 className="text-4xl font-bold bg-gradient-romantic bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold text-pink-600 mb-2">
             {app.title}
           </h1>
           <p className="text-gray-600">
@@ -131,7 +131,7 @@ export function AppViewer({ passkey }: AppViewerProps) {
           <CardContent className="p-8 space-y-6">
             {/* Custom content from template */}
             {app.customization && Object.entries(app.customization).length > 0 && (
-              <div className="space-y-4 mb-6 p-4 bg-gradient-romantic-light rounded-lg">
+              <div className="space-y-4 mb-6 p-4 bg-pink-100 rounded-lg">
                 {Object.entries(app.customization).map(([key, value]) => (
                   <div key={key}>
                     <p className="text-sm text-pink-700 font-semibold capitalize">
@@ -183,7 +183,7 @@ export function AppViewer({ passkey }: AppViewerProps) {
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-gradient-romantic text-white hover:opacity-90 mt-6"
+                className="w-full bg-pink-500 text-white hover:bg-pink-600 mt-6"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit My Response'}
               </Button>

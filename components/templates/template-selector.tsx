@@ -56,7 +56,7 @@ export function TemplateSelector() {
       {templates.map((template) => (
         <Card key={template.id} className="hover:shadow-lg transition-shadow border-pink-100">
           <CardHeader className="pb-3">
-            <div className="aspect-video rounded-lg bg-gradient-romantic-light mb-4 flex items-center justify-center">
+            <div className="aspect-video rounded-lg bg-pink-100 mb-4 flex items-center justify-center">
               <Heart className="w-10 h-10 text-pink-500 fill-pink-500" />
             </div>
             <CardTitle className="text-lg">{template.name}</CardTitle>
@@ -64,7 +64,7 @@ export function TemplateSelector() {
           </CardHeader>
           <CardContent>
             <Link href={`/editor/${template.id}`}>
-              <Button className="w-full bg-gradient-romantic text-white hover:opacity-90">
+              <Button className="w-full bg-pink-500 text-white hover:bg-pink-600">
                 Create with this template
               </Button>
             </Link>
