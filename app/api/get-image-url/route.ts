@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate SAS token
-    const secureUrl = generateSASToken(blobName)
+    const secureUrl = generateSASToken('images', blobName)
 
     return NextResponse.json(
       { secureUrl },

@@ -53,3 +53,14 @@ export function generateSASToken(containerName: string, blobName: string): strin
 
   return sasToken
 }
+
+export function getBlobNameFromUrl(url: string): string | null {
+  try {
+    const urlObj = new URL(url)
+    const pathSegments = urlObj.pathname.split('/')
+    return pathSegments.slice(2).join('/') // Skip container name
+  } catch (error) {
+    console.error('Invalid URL:', error)
+    return null
+  }
+}
