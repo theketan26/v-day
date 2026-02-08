@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 import { sql } from './db'
-import type { User } from './db'
+import type { User, AuthUser } from '../types'
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10)
@@ -12,16 +12,16 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash)
 }
 
-export async function createUser(email: string, password: string, name: string): Promise<User> {
+export async function createUser(email: string, password: string, fullName?: string): Promise<User> {
   const passwordHash = await hashPassword(password)
   const userId = crypto.randomUUID()
   const now = new Date()
 
   const result = await sql(
-    `INSERT INTO users (id, email, password_hash, name, created_at, updated_at)
+    `INSERT INTO users (id, email, password_hash, full_name, created_at, updated_at)
      VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, email, password_hash, name, created_at, updated_at`,
-    [userId, email, passwordHash, name, now, now]
+     RETURNING id, email, password_hash, full_name, created_at, updated_at`,
+    [userId, email, passwordHash, fullName, now, now]
   )
 
   if (result.length === 0) throw new Error('Failed to create user')
@@ -31,7 +31,7 @@ export async function createUser(email: string, password: string, name: string):
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   const result = await sql(
-    `SELECT id, email, password_hash, name, created_at, updated_at
+    `SELECT id, email, password_hash, full_name, created_at, updated_at
      FROM users WHERE email = $1`,
     [email]
   )
@@ -41,7 +41,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function getUserById(id: string): Promise<User | null> {
   const result = await sql(
-    `SELECT id, email, password_hash, name, created_at, updated_at
+    `SELECT id, email, password_hash, full_name, created_at, updated_at
      FROM users WHERE id = $1`,
     [id]
   )

@@ -1,4 +1,4 @@
-import { TemplateSelector } from '@/components/templates/template-selector'
+import { TemplateSelector } from '../../components/templates/template-selector'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuthUserId } from '@/lib/auth'
-import { sql } from '@/lib/db'
-import { appTitleSchema, customizationSchema, passkeySchema } from '@/lib/validation'
+import { getAuthUserId } from '../../../lib/auth'
+import { sql } from '../../../lib/db'
+import { appTitleSchema, customizationSchema, passkeySchema, createAppSchema } from '../../../lib/validation'
+import type { App, CreateAppRequest } from '../../../types'
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,9 +15,9 @@ export async function GET(req: NextRequest) {
     }
 
     const apps = await sql(
-      `SELECT id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at
+      `SELECT id, creator_id, template_id, title, customizations, passkey, is_published, created_at, updated_at
        FROM apps
-       WHERE user_id = $1
+       WHERE creator_id = $1
        ORDER BY updated_at DESC`,
       [userId]
     )
@@ -45,19 +46,18 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const title = appTitleSchema.parse(body.title)
-    const templateId = body.template_id
-    const customization = customizationSchema.parse(body.customization || {})
-    const passkey = passkeySchema.parse(body.passkey)
+    const validatedData = createAppSchema.parse(body)
 
     const appId = crypto.randomUUID()
+    const slug = validatedData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    const passkey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     const now = new Date()
 
     const result = await sql(
-      `INSERT INTO apps (id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at`,
-      [appId, userId, templateId, title, JSON.stringify(customization), passkey, false, now, now]
+      `INSERT INTO apps (id, creator_id, template_id, title, slug, passkey, customizations, is_published, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING id, creator_id, template_id, title, slug, passkey, customizations, is_published, created_at, updated_at`,
+      [appId, userId, validatedData.template_id, validatedData.title, slug, passkey, JSON.stringify(validatedData.customizations), false, now, now]
     )
 
     return NextResponse.json(

@@ -1,4 +1,4 @@
-import { TemplateEditor } from '@/components/editor/template-editor'
+import { TemplateEditor } from '../../../components/editor/template-editor-new'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 
 export default async function EditorPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
-  return <TemplateEditor templateId={params.id} />
+  return <TemplateEditor appId={params.id} />
 }

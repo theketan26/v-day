@@ -1,33 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
+} from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Card } from '../ui/card';
 import { Loader2 } from 'lucide-react';
+import type { App } from '../../types';
 
 interface Template {
   id: string;
   name: string;
   description: string;
-}
-
-interface App {
-  id: string;
-  title: string;
-  template_id: string;
-  slug: string;
-  passkey: string;
-  is_published: boolean;
-  created_at: string;
 }
 
 interface NewAppModalProps {

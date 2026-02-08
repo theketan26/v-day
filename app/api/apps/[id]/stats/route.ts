@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { db } from '@/lib/db';
-import { verifySession } from '@/lib/auth';
+import { sql } from '../../../../../lib/db';
+import { getAuthUser } from '../../../../../lib/auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -15,25 +15,25 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await verifySession(sessionId);
+    const user = await getAuthUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verify app belongs to user
-    const appResult = await db.query(
+    const appResult = await sql(
       'SELECT * FROM apps WHERE id = $1 AND creator_id = $2',
       [id, user.id]
     );
 
-    if (appResult.rows.length === 0) {
+    if (appResult.length === 0) {
       return NextResponse.json({ error: 'App not found' }, { status: 404 });
     }
 
     // Get response count
-    const statsResult = await db.query(
+    const statsResult = await sql(
       `SELECT 
         COUNT(*) as total_responses,
         COUNT(DISTINCT visitor_id) as unique_visitors
@@ -42,7 +42,7 @@ export async function GET(
       [id]
     );
 
-    const stats = statsResult.rows[0];
+    const stats = statsResult[0];
 
     return NextResponse.json({
       stats: {

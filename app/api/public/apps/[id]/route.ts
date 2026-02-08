@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sql } from '@/lib/db'
+import { sql } from '../../../../../lib/db'
+import type { App, Template } from '../../../../../types'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { passkey: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const passkey = (await params).passkey
+    const passkey = (await params).id
 
     const apps = await sql(
-      `SELECT id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at
+      `SELECT id, creator_id, template_id, title, customizations, passkey, is_published, created_at, updated_at
        FROM apps
-       WHERE passkey = $1`,
+       WHERE passkey = $1 AND is_published = true`,
       [passkey]
     )
 
@@ -26,7 +27,7 @@ export async function GET(
 
     // Get template info
     const templates = await sql(
-      `SELECT id, name, config FROM templates WHERE id = $1`,
+      `SELECT id, name, description, theme, html_template, css_template, js_template, thumbnail_url, customization_fields FROM templates WHERE id = $1`,
       [app.template_id]
     )
 
@@ -37,9 +38,9 @@ export async function GET(
         app: {
           id: app.id,
           title: app.title,
-          customization: typeof app.customization === 'string' 
-            ? JSON.parse(app.customization) 
-            : app.customization,
+          customizations: typeof app.customizations === 'string'
+            ? JSON.parse(app.customizations)
+            : app.customizations,
           template: template,
         },
       },

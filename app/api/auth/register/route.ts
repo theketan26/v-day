@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createUser, getUserByEmail, setAuthSession } from '@/lib/auth'
-import { registerSchema } from '@/lib/validation'
+import { createUser, getUserByEmail, setAuthSession } from '../../../../lib/auth'
+import { registerSchema } from '../../../../lib/validation'
 import { ZodError } from 'zod'
 
 export async function POST(req: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const user = await createUser(
       validatedData.email,
       validatedData.password,
-      validatedData.name
+      validatedData.full_name
     )
 
     // Set session
@@ -35,14 +35,14 @@ export async function POST(req: NextRequest) {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name,
+          full_name: user.full_name,
         },
       },
       { status: 201 }
     )
   } catch (error) {
     if (error instanceof ZodError) {
-      const fieldErrors = error.errors.reduce((acc, err) => {
+      const fieldErrors = error.issues.reduce((acc: any, err: any) => {
         const path = err.path[0]?.toString() || 'unknown'
         acc[path] = err.message
         return acc

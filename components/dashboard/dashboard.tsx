@@ -3,22 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Plus, LogOut } from 'lucide-react';
 import AppCard from './app-card';
 import NewAppModal from './new-app-modal';
-
-interface App {
-  id: string;
-  title: string;
-  template_id: string;
-  slug: string;
-  passkey: string;
-  is_published: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import type { App } from '../../types';
 
 export default function Dashboard() {
   const [apps, setApps] = useState<App[]>([]);
@@ -61,6 +51,12 @@ export default function Dashboard() {
 
   const handleAppDeleted = (appId: string) => {
     setApps(apps.filter(app => app.id !== appId));
+  };
+
+  const handleAppPublished = (appId: string) => {
+    setApps(apps.map(app => 
+      app.id === appId ? { ...app, is_published: true } : app
+    ));
   };
 
   return (
@@ -118,6 +114,7 @@ export default function Dashboard() {
                 key={app.id}
                 app={app}
                 onDeleted={handleAppDeleted}
+                onPublished={handleAppPublished}
               />
             ))}
           </div>

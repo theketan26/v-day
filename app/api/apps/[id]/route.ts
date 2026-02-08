@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAuthUserId } from '@/lib/auth'
-import { sql } from '@/lib/db'
-import { customizationSchema } from '@/lib/validation'
+import { getAuthUserId } from '../../../../lib/auth'
+import { sql } from '../../../../lib/db'
+import { customizationSchema, updateAppSchema } from '../../../../lib/validation'
+import type { App, UpdateAppRequest } from '../../../../types'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getAuthUserId()
@@ -17,9 +18,9 @@ export async function GET(
     }
 
     const apps = await sql(
-      `SELECT id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at
+      `SELECT id, creator_id, template_id, title, customizations, passkey, is_published, created_at, updated_at
        FROM apps
-       WHERE id = $1 AND user_id = $2`,
+       WHERE id = $1 AND creator_id = $2`,
       [(await params).id, userId]
     )
 
@@ -45,7 +46,7 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getAuthUserId()
@@ -57,15 +58,15 @@ export async function PATCH(
     }
 
     const body = await req.json()
-    const customization = customizationSchema.parse(body.customization)
+    const validatedData = updateAppSchema.parse(body)
     const now = new Date()
 
     const result = await sql(
       `UPDATE apps
-       SET customization = $1, updated_at = $2
-       WHERE id = $3 AND user_id = $4
-       RETURNING id, user_id, template_id, title, customization, passkey, is_public, created_at, updated_at`,
-      [JSON.stringify(customization), now, (await params).id, userId]
+       SET customizations = $1, title = COALESCE($2, title), updated_at = $3, passkey = $6
+       WHERE id = $4 AND creator_id = $5
+       RETURNING id, creator_id, template_id, title, customizations, passkey, is_published, created_at, updated_at`,
+      [JSON.stringify(validatedData.customizations || {}), validatedData.title, now, (await params).id, userId, validatedData.passkey]
     )
 
     if (result.length === 0) {
@@ -90,7 +91,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = await getAuthUserId()
@@ -102,7 +103,7 @@ export async function DELETE(
     }
 
     await sql(
-      `DELETE FROM apps WHERE id = $1 AND user_id = $2`,
+      `DELETE FROM apps WHERE id = $1 AND creator_id = $2`,
       [(await params).id, userId]
     )
 

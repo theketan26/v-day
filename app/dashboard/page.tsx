@@ -1,10 +1,10 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import Dashboard from '@/components/dashboard/dashboard';
+import Dashboard from '../../components/dashboard/dashboard';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
-  const sessionId = cookieStore.get('session_id')?.value;
+  const sessionId = cookieStore.get('auth_session')?.value;
 
   if (!sessionId) {
     redirect('/login');

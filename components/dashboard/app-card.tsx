@@ -2,30 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Copy, Trash2, Eye, Edit, Share2 } from 'lucide-react';
-
-interface App {
-  id: string;
-  title: string;
-  template_id: string;
-  slug: string;
-  passkey: string;
-  is_published: boolean;
-  created_at: string;
-}
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Copy, Trash2, Eye, Edit, Share2, Upload } from 'lucide-react';
+import type { App } from '../../types';
 
 interface AppCardProps {
   app: App;
   onDeleted: (appId: string) => void;
+  onPublished?: (appId: string) => void;
 }
 
-export default function AppCard({ app, onDeleted }: AppCardProps) {
+export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
   const [copied, setCopied] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  const publicUrl = `${window.location.origin}/view/${app.passkey}`;
+  const publicUrl = `${window.location.origin}/view-app/${app.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(publicUrl);
@@ -46,6 +39,26 @@ export default function AppCard({ app, onDeleted }: AppCardProps) {
       console.error('Error deleting app:', error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!confirm('Are you sure you want to publish this app? It will be visible to anyone with the link.')) return;
+    
+    setIsPublishing(true);
+    try {
+      const response = await fetch(`/api/apps/${app.id}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_published: true })
+      });
+      if (response.ok) {
+        onPublished?.(app.id);
+      }
+    } catch (error) {
+      console.error('Error publishing app:', error);
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -98,12 +111,23 @@ export default function AppCard({ app, onDeleted }: AppCardProps) {
                 Edit
               </Button>
             </Link>
-            <Link href={`/view/${app.passkey}`} className="flex-1">
+            <Link href={`/view-app/${app.id}`} className="flex-1">
               <Button size="sm" variant="outline" className="w-full gap-2">
                 <Eye className="w-4 h-4" />
                 Preview
               </Button>
             </Link>
+            {!app.is_published && (
+              <Button
+                size="sm"
+                onClick={handlePublish}
+                disabled={isPublishing}
+                className="gap-2 bg-green-500 text-white hover:bg-green-600"
+              >
+                <Upload className="w-4 h-4" />
+                {isPublishing ? 'Publishing...' : 'Publish'}
+              </Button>
+            )}
             <Button
               size="sm"
               onClick={handleDelete}

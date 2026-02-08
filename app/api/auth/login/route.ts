@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getUserByEmail, verifyPassword, setAuthSession } from '@/lib/auth'
-import { loginSchema } from '@/lib/validation'
+import { getUserByEmail, verifyPassword, setAuthSession } from '../../../../lib/auth'
+import { loginSchema } from '../../../../lib/validation'
 import { ZodError } from 'zod'
 
 export async function POST(req: NextRequest) {
@@ -37,14 +37,14 @@ export async function POST(req: NextRequest) {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name,
+          full_name: user.full_name,
         },
       },
       { status: 200 }
     )
   } catch (error) {
     if (error instanceof ZodError) {
-      const fieldErrors = error.errors.reduce((acc, err) => {
+      const fieldErrors = error.issues.reduce((acc: any, err: any) => {
         const path = err.path[0]?.toString() || 'unknown'
         acc[path] = err.message
         return acc
