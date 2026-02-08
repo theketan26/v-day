@@ -102,6 +102,17 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
           </DialogDescription>
         </DialogHeader>
 
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-6 h-6 animate-spin text-pink-500" />
+          </div>
+        )}
+        {!isLoading && step === 'select-template' && templates.length === 0 && (
+          <div className="py-12 text-center text-gray-500">
+            No templates available
+          </div>
+        )}
+
         <div className="py-6 px-6">
           {step === 'select-template' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

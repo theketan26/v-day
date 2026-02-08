@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Copy, Trash2, Eye, Edit, Share2, Upload } from 'lucide-react';
+import { Copy, Trash2, Eye, EyeOff, Edit, Share2, Upload } from 'lucide-react';
 import type { App } from '../../types';
 
 interface AppCardProps {
@@ -17,11 +17,22 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
   const [copied, setCopied] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isPasskeyVisible, setIsPasskeyVisible] = useState(false);
 
   const publicUrl = `${window.location.origin}/view-app/${app.id}`;
 
+  const getMaskedPasskey = (passkey: string) => {
+    return '*'.repeat(passkey.length);
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(publicUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyPasskey = () => {
+    navigator.clipboard.writeText(app.passkey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -99,6 +110,40 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
               >
                 <Copy className="w-4 h-4" />
                 {copied ? 'Copied' : 'Copy'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Passkey */}
+          <div>
+            <p className="text-sm font-medium text-gray-600 mb-2">Passkey</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={isPasskeyVisible ? app.passkey : getMaskedPasskey(app.passkey)}
+                readOnly
+                className="flex-1 px-3 py-2 text-sm bg-gray-100 rounded border border-gray-300 text-gray-600"
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsPasskeyVisible(!isPasskeyVisible)}
+                className="gap-2"
+                title={isPasskeyVisible ? 'Hide passkey' : 'Show passkey'}
+              >
+                {isPasskeyVisible ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleCopyPasskey}
+                className="gap-2"
+              >
+                <Copy className="w-4 h-4" />
               </Button>
             </div>
           </div>
