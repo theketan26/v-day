@@ -128,3 +128,25 @@
 body {
   @apply transition-colors duration-200;
 }
+
+/* From Uiverse.io by necatimertmetin */ 
+.bg-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.05;
+  z-index: -1;
+  /* Add your background pattern here */
+  background-image: radial-gradient(
+      circle at 52% 48%,
+      #ffebf5 10%,
+      transparent 15%
+    ),
+    radial-gradient(circle at 50% 50%, #ffbcdd 20%, transparent 20%),
+    radial-gradient(circle at 40% 40%, #ff0080 20%, transparent 21%),
+    radial-gradient(circle at 60% 60%, #ff1288 20%, transparent 21%),
+    radial-gradient(circle at 60% 40%, #ff2c96 20%, transparent 21%),
+    radial-gradient(circle at 40% 60%, #ff44a1 20%, transparent 21%);
+  background-size: 200px 200px;
+  background-position: center;
+}

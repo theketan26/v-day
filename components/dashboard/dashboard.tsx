@@ -9,6 +9,8 @@ import { Plus, LogOut } from 'lucide-react';
 import AppCard from './app-card';
 import NewAppModal from './new-app-modal';
 import type { App } from '../../types';
+import logo from '../../assets/logo.png';
+import { FlowerButton } from '../ui/flower-button';
 
 export default function Dashboard() {
   const [apps, setApps] = useState<App[]>([]);
@@ -60,13 +62,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Your Romantic Apps</h1>
-            <p className="text-gray-600">Create and manage your personalized romantic experiences</p>
+            <img src={logo.src} alt="Romantic Apps Logo" className="h-16" />
           </div>
           <Button variant="outline" size="lg" onClick={handleLogout} className="gap-2">
             <LogOut className="w-4 h-4" />
@@ -76,10 +77,10 @@ export default function Dashboard() {
 
         {/* Create New App Button */}
         <div className="mb-8">
-          <Button size="lg" onClick={() => setShowNewAppModal(true)} className="gap-2 bg-pink-500 text-white hover:bg-pink-600">
+          <FlowerButton onClick={() => setShowNewAppModal(true)}>
             <Plus className="w-5 h-5" />
             Create New App
-          </Button>
+          </FlowerButton>
         </div>
 
         {/* Apps Grid */}
