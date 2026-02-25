@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'ghost' | 'outline'
+  variant?: 'default' | 'ghost' | 'outline' | 'destructive'
   size?: 'sm' | 'md' | 'lg'
   children: React.ReactNode
 }
@@ -23,7 +23,8 @@ export function Button({
   const variantStyles = {
     default: 'bg-pink-500 text-white hover:bg-pink-600 active:scale-95',
     ghost: 'text-gray-700 hover:bg-gray-100',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+    outline: 'bg-pink-50 border border-gray-300 hover:border-rose-300 text-gray-700 hover:text-rose-800 hover:bg-rose-100',
+    destructive: 'bg-red-500 text-white hover:bg-red-600 active:scale-95',
   }
 
   return (

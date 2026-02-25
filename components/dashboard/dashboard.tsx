@@ -76,7 +76,7 @@ export default function Dashboard() {
         </div>
 
         {/* Create New App Button */}
-        <div className="mb-8">
+        <div className="fixed bottom-16 right-20">
           <FlowerButton onClick={() => setShowNewAppModal(true)}>
             <Plus className="w-5 h-5" />
             Create New App

@@ -6,6 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Button } from '../ui/button';
 import { Copy, Trash2, Eye, EyeOff, Edit, Share2, Upload } from 'lucide-react';
 import type { App } from '../../types';
+import flowerHeartSVG from '../../assets/flower-heart.svg';
+import flowerLotusSVG from '../../assets/flower-lotussvg.svg';
+import flowerSunflowerSVG from '../../assets/flower-subflower.svg';
+import flowerTulipSVG from '../../assets/flower-tulip.svg';
+import { FlowerHeartIcon } from '../icons/flower-heart';
+import { FlowerLotusIcon } from '../icons/flower-lotussvg';
+import { FlowerSunflowerIcon } from '../icons/flower-sunflower';
+import { FlowerTulipIcon } from '../icons/flower-tulip';
+import { randomInt } from 'crypto';
 
 interface AppCardProps {
   app: App;
@@ -73,9 +82,34 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
     }
   };
 
+  const getRandomClassNames = () => {
+    const bgClasses = [
+      "h-full -rotate-45 absolute -bottom-20 -right-80 text-rose-200/50 z-0 pointer-events-none",
+      "h-full rotate-12 absolute -top-16 -left-60 text-pink-200/50 z-0 pointer-events-none",
+      "h-full rotate-12 absolute text-pink-200/50 z-0 pointer-events-none top-6 right-0",
+      "h-full -rotate-12 absolute text-pink-200/50 z-0 pointer-events-none top-6 -left-24"
+    ];
+    const randomIndex = Math.floor(Math.random() * bgClasses.length);
+    return bgClasses[randomIndex];
+  }
+
+  const getRandomFlower = () => {
+    const flowers = [
+      <FlowerHeartIcon className={getRandomClassNames()} />,
+      <FlowerLotusIcon className={getRandomClassNames()} />,
+      <FlowerSunflowerIcon className={getRandomClassNames()} />,
+      <FlowerTulipIcon className={getRandomClassNames()} />
+    ];
+    const randomIndex = Math.floor(Math.random() * flowers.length);
+    return flowers[randomIndex];
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
+    <Card className="hover:shadow-lg hover:scale-105 transition-all duration-500 hover:shadow-rose-200 relative overflow-hidden">
+      {/* Background SVG */}
+      {getRandomFlower()}
+
+      <CardHeader className="relative z-10">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle className="text-xl">{app.title}</CardTitle>
@@ -90,7 +124,7 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="space-y-4">
           {/* Share Link */}
           <div>
@@ -125,7 +159,6 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
                 className="flex-1 px-3 py-2 text-sm bg-gray-100 rounded border border-gray-300 text-gray-600"
               />
               <Button
-                size="sm"
                 variant="outline"
                 onClick={() => setIsPasskeyVisible(!isPasskeyVisible)}
                 className="gap-2"
@@ -138,7 +171,6 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
                 )}
               </Button>
               <Button
-                size="sm"
                 variant="outline"
                 onClick={handleCopyPasskey}
                 className="gap-2"
@@ -151,20 +183,19 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
           {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
             <Link href={`/editor/${app.id}`} className="flex-1">
-              <Button size="sm" variant="outline" className="w-full gap-2">
+              <Button variant="outline" className="w-full gap-2">
                 <Edit className="w-4 h-4" />
                 Edit
               </Button>
             </Link>
             <Link href={`/view-app/${app.id}`} className="flex-1">
-              <Button size="sm" variant="outline" className="w-full gap-2">
+              <Button variant="outline" className="w-full gap-2">
                 <Eye className="w-4 h-4" />
                 Preview
               </Button>
             </Link>
             {!app.is_published && (
               <Button
-                size="sm"
                 onClick={handlePublish}
                 disabled={isPublishing}
                 className="gap-2 bg-green-500 text-white hover:bg-green-600"
@@ -174,10 +205,9 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
               </Button>
             )}
             <Button
-              size="sm"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="gap-2 bg-red-500 text-white hover:bg-red-600"
+              variant="destructive"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
