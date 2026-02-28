@@ -9,9 +9,6 @@ const geistMono = Geist_Mono({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Romantic Apps - Create Custom Love Stories',
   description: 'Create personalized romantic experiences with beautiful, animated templates. Share with your loved ones.',
-  icons: {
-    icon: '/favicon.ico',
-  },
 }
 
 export const viewport: Viewport = {
