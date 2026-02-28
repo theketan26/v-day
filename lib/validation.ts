@@ -72,7 +72,7 @@ export const responseDataSchema = z.record(z.string(), z.unknown()).optional()
 
 // Combined schemas for API requests
 export const createAppSchema = z.object({
-  template_id: z.string().uuid('Invalid template ID'),
+  template_id: z.string(),
   title: appTitleSchema,
   customizations: customizationSchema.optional().default({}),
 })

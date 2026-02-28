@@ -8,10 +8,10 @@ export async function POST(
   try {
     const appId = (await params).id
     const body = await req.json()
-    
-    const { 
-      visitor_name, 
-      visitor_email, 
+
+    const {
+      visitor_name,
+      visitor_email,
       visitor_phone,
       os,
       browser,
@@ -31,10 +31,11 @@ export async function POST(
     const ip = forwarded ? forwarded.split(',')[0] : req.headers.get('x-real-ip') || null
 
     // Insert log
-    await sql(
+    const result = await sql(
       `INSERT INTO app_view_logs 
         (app_id, visitor_name, visitor_email, visitor_phone, os, browser, device_type, ip_address, user_agent)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING id`,
       [
         appId,
         visitor_name,
@@ -49,7 +50,7 @@ export async function POST(
     )
 
     return NextResponse.json(
-      { success: true },
+      { success: true, sessionId: result[0].id },
       { status: 200 }
     )
   } catch (error) {

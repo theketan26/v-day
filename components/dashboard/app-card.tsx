@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Copy, Trash2, Eye, EyeOff, Edit, Share2, Upload } from 'lucide-react';
+import { Copy, Trash2, Eye, EyeOff, Edit, Share2, Upload, Activity, Loader2 } from 'lucide-react';
+import { ConfirmationModal } from '../ui/confirmation-modal';
 import type { App } from '../../types';
 import flowerHeartSVG from '../../assets/flower-heart.svg';
 import flowerLotusSVG from '../../assets/flower-lotussvg.svg';
@@ -27,6 +28,8 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isPasskeyVisible, setIsPasskeyVisible] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
 
   const publicUrl = `${window.location.origin}/view-app/${app.id}`;
 
@@ -47,12 +50,11 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this app?')) return;
-    
     setIsDeleting(true);
     try {
       const response = await fetch(`/api/apps/${app.id}`, { method: 'DELETE' });
       if (response.ok) {
+        setShowDeleteModal(false);
         onDeleted(app.id);
       }
     } catch (error) {
@@ -63,8 +65,6 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
   };
 
   const handlePublish = async () => {
-    if (!confirm('Are you sure you want to publish this app? It will be visible to anyone with the link.')) return;
-    
     setIsPublishing(true);
     try {
       const response = await fetch(`/api/apps/${app.id}/publish`, {
@@ -73,6 +73,7 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
         body: JSON.stringify({ is_published: true })
       });
       if (response.ok) {
+        setShowPublishModal(false);
         onPublished?.(app.id);
       }
     } catch (error) {
@@ -194,9 +195,17 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
                 Preview
               </Button>
             </Link>
+            {app.is_published && (
+              <Link href={`/dashboard/analytics/${app.id}`} className="flex-1">
+                <Button variant="outline" className="w-full gap-2">
+                  <Activity className="w-4 h-4" />
+                  Analytics
+                </Button>
+              </Link>
+            )}
             {!app.is_published && (
               <Button
-                onClick={handlePublish}
+                onClick={() => setShowPublishModal(true)}
                 disabled={isPublishing}
                 className="gap-2 bg-green-500 text-white hover:bg-green-600"
               >
@@ -205,15 +214,44 @@ export default function AppCard({ app, onDeleted, onPublished }: AppCardProps) {
               </Button>
             )}
             <Button
-              onClick={handleDelete}
+              onClick={() => setShowDeleteModal(true)}
               disabled={isDeleting}
               variant="destructive"
+              title="Delete App"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
       </CardContent>
+
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        title="Delete Application"
+        description={
+          <p>
+            Are you sure you want to delete <span className="font-semibold text-gray-900">"{app.title}"</span>? This will permanently remove all associated data, analytics, and access.
+          </p>
+        }
+        confirmText="Yes, Delete"
+        isLoading={isDeleting}
+      />
+
+      <ConfirmationModal
+        isOpen={showPublishModal}
+        onClose={() => setShowPublishModal(false)}
+        onConfirm={handlePublish}
+        title="Publish Application"
+        description={
+          <>
+            Are you sure you want to publish <span className="font-semibold text-gray-900">"{app.title}"</span>? Once published, your application will be visible to anyone who has its share link.
+          </>
+        }
+        confirmText="Yes, Publish"
+        isLoading={isPublishing}
+      />
     </Card>
   );
 }

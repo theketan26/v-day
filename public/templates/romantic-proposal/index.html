@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}}</title>
+
+  <style>
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: '' Playfair Display'', serif;
+      background: linear-gradient(135deg, #1a0033 0%, #330033 50%, #660066 100%);
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .intro-section,
+    .journey-section,
+    .question-section,
+    .question-accepted {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .fade-in {
+      animation: fadeIn 2s ease-out;
+    }
+
+    .fade-in-delay {
+      animation: fadeIn 2s ease-out 0.5s both;
+    }
+
+    .intro-section h1 {
+      font-size: 4em;
+      margin-bottom: 30px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .intro-section p {
+      font-size: 1.5em;
+      line-height: 1.8;
+      max-width: 600px;
+    }
+
+    .journey-section {
+      position: relative;
+    }
+
+    .journey-section h2 {
+      font-size: 3em;
+      margin-bottom: 30px;
+      color: #ffb6c1;
+    }
+
+    .journey-section p {
+      font-size: 1.3em;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .journey-image {
+      margin-top: 30px;
+      max-width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      height: 50vh;
+      width: auto;
+    }
+
+    .question-section {
+      position: relative;
+    }
+
+    .ring {
+      font-size: 8em;
+      animation: rotate 10s linear infinite, bounce 2s ease-in-out infinite;
+      margin-bottom: 40px;
+      filter: drop-shadow(0 0 30px gold);
+    }
+
+    .big-question {
+      font-size: 4.5em;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+      animation: fadeIn 2s ease-out 1s both;
+    }
+
+    .name {
+      font-size: 2em;
+      color: #ffb6c1;
+      animation: fadeIn 2s ease-out 1.5s both;
+    }
+
+    .question-buttons {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .accept-button {
+      background-color: #226832;
+      color: white;
+    }
+
+    .decline-button {
+      background-color: #722d34;
+      color: white;
+    }
+
+    .accept-button,
+    .decline-button {
+      font-size: 1.2em;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, top 0.2s ease, left 0.2s ease, position 0.2s ease;
+    }
+
+    .accept-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #226832;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns=''http://www.w3.org/2000/svg''  width=''40'' height=''48'' viewport=''0 0 100 100'' style=''fill:black;font-size:24px;''><text y=''50%''>❤️</text></svg>") 16 0,
+        auto;
+    }
+
+    .decline-button:hover {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns=''http://www.w3.org/2000/svg''  width=''40'' height=''48'' viewport=''0 0 100 100'' style=''fill:black;font-size:24px;''><text y=''50%''>💔</text></svg>") 16 0,
+        auto;
+    }
+
+    .question-accepted {
+      display: none;
+    }
+
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+  <canvas id="confetti"></canvas>
+  <div class="container">
+    <div class="intro-section">
+      <h1 class="fade-in">{{intro_title}}</h1>
+      <p class="fade-in-delay">{{intro_message}}</p>
+    </div>
+
+    <div class="journey-section">
+      <h2>{{journey_title}}</h2>
+      <p>{{journey_message}}</p>
+      <img src="{{journey_image}}" alt="Journey Image" class="journey-image" />
+    </div>
+
+    <div class="question-section" id="questionSection">
+      <div class="ring">💍</div>
+      <h1 class="big-question">{{question}}</h1>
+      <p class="name">{{recipient_name}}</p>
+      <div class="question-buttons">
+        <button class="accept-button" onclick="acceptProposal()">{{accept_button_text}}</button>
+        <button class="decline-button" id="declineButton">{{decline_button_text}}</button>
+      </div>
+    </div>
+
+    <div class="question-accepted fade-in-delay" id="question-accepted">
+      <h1>{{accepted_message}}</h1>
+    </div>
+  </div>
+
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const starsContainer = document.querySelector(".stars");
+
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement("div");
+        star.style.position = "absolute";
+        star.style.width = Math.random() * 3 + 1 + "px";
+        star.style.height = star.style.width;
+        star.style.background = "white";
+        star.style.borderRadius = "50%";
+        star.style.top = Math.random() * 100 + "%";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.animation = `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite`;
+        star.style.animationDelay = Math.random() * 3 + "s";
+        starsContainer.appendChild(star);
+      }
+
+      // Smooth scroll through sections
+      let currentSection = 0;
+      const sections = document.querySelectorAll(".intro-section, .journey-section, .question-section");
+
+      document.addEventListener("wheel", function (e) {
+        if (e.deltaY > 0 && currentSection < sections.length - 1) {
+          currentSection++;
+          sections[currentSection].scrollIntoView({ behavior: "smooth" });
+        } else if (e.deltaY < 0 && currentSection > 0) {
+          currentSection--;
+          sections[currentSection].scrollIntoView({ behavior: "smooth" });
+        }
+      }, { passive: true });
+
+
+      document.getElementById("declineButton").addEventListener("mouseover", function () {
+        const questionSection = document.getElementById("questionSection");
+        const rect = questionSection.getBoundingClientRect();
+        const randomX = Math.random() * (rect.width - this.offsetWidth);
+        const randomY = Math.random() * (rect.height - this.offsetHeight);
+        this.style.position = "absolute";
+        this.style.left = randomX + "px";
+        this.style.top = randomY + "px";
+      });
+    });
+
+
+    function animateConfetti() {
+      const confettiCanvas = document.getElementById("confetti");
+      const confetti = confettiCanvas ? confettiCanvas.getContext("2d") : null;
+
+      if (!confetti) return;
+
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const colors = ["#ff0a54", "#ff477e", "#ff85a1", "#fbb1b1", "#f9bec7"];
+      const confettiPieces = [];
+
+      // Create confetti pieces once
+      for (let i = 0; i < 100; i++) {
+        confettiPieces.push({
+          x: Math.random() * confettiCanvas.width,
+          y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 5 + 5,
+          speed: Math.random() * 3 + 2,
+          angle: Math.random() * 360
+        });
+      }
+
+      function animate() {
+        confetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+        let stillAnimating = false;
+        confettiPieces.forEach(piece => {
+          piece.y += piece.speed;
+          piece.x += Math.sin(piece.angle) * 2;
+          piece.angle += 0.1;
+
+          // Only draw if still on screen
+          if (piece.y < confettiCanvas.height) {
+            confetti.fillStyle = piece.color;
+            confetti.fillRect(piece.x, piece.y, piece.size, piece.size);
+            stillAnimating = true;
+          }
+        });
+
+        // Continue animation only if confetti is still on screen
+        if (stillAnimating) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+
+    function acceptProposal() {
+      document.querySelector("#questionSection").style.display = "none";
+      document.querySelector("#question-accepted").style.display = "flex";
+      animateConfetti();
+    }
+
+
+  </script>
+</body>
+
+</html>

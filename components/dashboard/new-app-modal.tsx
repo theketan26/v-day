@@ -19,6 +19,7 @@ interface Template {
   id: string;
   name: string;
   description: string;
+  customization_fields?: any[];
 }
 
 interface NewAppModalProps {
@@ -62,12 +63,25 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
 
     setIsLoading(true);
     try {
+      // Find the selected template to extract its default customization fields
+      const template = templates.find(t => t.id === selectedTemplate);
+      const defaultCustomizations: Record<string, string> = {};
+
+      if (template?.customization_fields) {
+        template.customization_fields.forEach(field => {
+          if (field.key && field.default !== undefined) {
+            defaultCustomizations[field.key] = field.default;
+          }
+        });
+      }
+
       const response = await fetch('/api/apps', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: appTitle,
           template_id: selectedTemplate,
+          customizations: defaultCustomizations,
         }),
       });
 
@@ -92,7 +106,7 @@ export default function NewAppModal({ isOpen, onClose, onAppCreated }: NewAppMod
 
   return (
     <Dialog open={isOpen} onOpenChange={handleReset}>
-      <DialogContent className="max-w-2xl w-full mx-4">
+      <DialogContent className="max-w-4xl w-full mx-4">
         <DialogHeader>
           <DialogTitle>Create a New Romantic App</DialogTitle>
           <DialogDescription>

@@ -1,0 +1,73 @@
+{
+    "name": "Romantic Proposal",
+    "description": "A beautiful romantic proposal template with interactive questions.",
+    "theme": "pink",
+    "customization_fields": [
+        {
+            "key": "title",
+            "label": "Browser Title",
+            "type": "text",
+            "default": "A Special Question for You"
+        },
+        {
+            "key": "intro_title",
+            "label": "Intro Title",
+            "type": "text",
+            "default": "I have something to ask you..."
+        },
+        {
+            "key": "intro_message",
+            "label": "Intro Message",
+            "type": "textarea",
+            "default": "Every moment with you has been a dream come true."
+        },
+        {
+            "key": "journey_title",
+            "label": "Journey Title",
+            "type": "text",
+            "default": "Our Beautiful Journey"
+        },
+        {
+            "key": "journey_message",
+            "label": "Journey Message",
+            "type": "textarea",
+            "default": "From our first date to this very moment, you have made my life infinitely better."
+        },
+        {
+            "key": "journey_image",
+            "label": "Journey Image URL",
+            "type": "image",
+            "default": "https://unsplash.com/photos/a-couple-of-people-sitting-on-top-of-a-sandy-beach-89J1d_xFDIo"
+        },
+        {
+            "key": "question",
+            "label": "The Question",
+            "type": "text",
+            "default": "Will you be my Valentine?"
+        },
+        {
+            "key": "recipient_name",
+            "label": "Recipient's Name",
+            "type": "text",
+            "default": "My Love"
+        },
+        {
+            "key": "accept_button_text",
+            "label": "Accept Button Text",
+            "type": "text",
+            "default": "Yes, a thousand times yes!"
+        },
+        {
+            "key": "decline_button_text",
+            "label": "Decline Button Text",
+            "type": "text",
+            "default": "No"
+        },
+        {
+            "key": "accepted_message",
+            "label": "Accepted Message",
+            "type": "textarea",
+            "default": "You've made me the happiest person in the world! ❤️"
+        }
+    ]
+}

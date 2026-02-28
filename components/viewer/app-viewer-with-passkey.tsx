@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, FormEvent } from 'react'
+import { useState, FormEvent } from 'react'
 import { Loader2, Lock } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
@@ -27,7 +27,6 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
   const [isVerifying, setIsVerifying] = useState(false)
   const [isVerified, setIsVerified] = useState(false)
   const [app, setApp] = useState<AppData | null>(null)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   // Detect device information
   const getDeviceInfo = () => {
@@ -57,10 +56,12 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
     return { os, browser, deviceType, userAgent }
   }
 
+  const [sessionId, setSessionId] = useState<string | null>(null)
+
   const logAppView = async () => {
     try {
       const deviceInfo = getDeviceInfo()
-      await fetch(`/api/public/apps/${appId}/log`, {
+      const response = await fetch(`/api/public/apps/${appId}/log`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -70,6 +71,11 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
           ...deviceInfo
         })
       })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.sessionId) setSessionId(data.sessionId)
+      }
     } catch (error) {
       console.error('Failed to log view:', error)
     }
@@ -77,7 +83,7 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
 
   const handleVerifyPasskey = async (e: FormEvent) => {
     e.preventDefault()
-    
+
     if (!visitorName.trim()) {
       toast.error('Please enter your name')
       return
@@ -95,20 +101,20 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passkey: passkey.trim() })
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         toast.error(error.error || 'Invalid passkey')
         return
       }
-      
+
       const data = await response.json()
       setApp(data.app)
       setIsVerified(true)
-      
+
       // Log the app view
       await logAppView()
-      
+
       toast.success('Access granted!')
     } catch (error) {
       console.error('Failed to verify passkey:', error)
@@ -118,80 +124,7 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
     }
   }
 
-  useEffect(() => {
-    if (app && iframeRef.current && isVerified) {
-      renderTemplate()
-    }
-  }, [app, isVerified])
 
-  const renderTemplate = () => {
-    if (!app || !iframeRef.current) return
-
-    // Replace placeholders in HTML template
-    let html = app.template.html_template
-    Object.entries(app.customizations).forEach(([key, value]) => {
-      const regex = new RegExp(`{{${key}}}`, 'g')
-      html = html.replace(regex, value || '')
-    })
-
-    // Create complete HTML document
-    const fullHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${app.title}</title>
-        <style>
-          ${app.template.css_template || ''}
-        </style>
-      </head>
-      <body>
-        ${html}
-        <script>
-          // Generate SAS tokens for images if needed
-          async function loadSecureImages() {
-            const images = document.querySelectorAll('img[data-secure-src]');
-            for (const img of images) {
-              const baseUrl = img.getAttribute('data-secure-src');
-              if (baseUrl && baseUrl.includes('blob.core.windows.net')) {
-                try {
-                  const response = await fetch('/api/get-image-url', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ imageUrl: baseUrl })
-                  });
-                  const data = await response.json();
-                  if (data.secureUrl) {
-                    img.src = data.secureUrl;
-                  }
-                } catch (error) {
-                  console.error('Failed to load secure image:', error);
-                }
-              }
-            }
-          }
-          
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadSecureImages);
-          } else {
-            loadSecureImages();
-          }
-          
-          ${app.template.js_template || ''}
-        </script>
-      </body>
-      </html>
-    `
-
-    // Write to iframe
-    const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document
-    if (iframeDoc) {
-      iframeDoc.open()
-      iframeDoc.write(fullHTML)
-      iframeDoc.close()
-    }
-  }
 
   // Show passkey form if not verified
   if (!isVerified) {
@@ -203,14 +136,14 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
               <Lock className="w-8 h-8 text-pink-600" />
             </div>
           </div>
-          
+
           <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
             Protected App
           </h1>
           <p className="text-center text-gray-600 mb-8">
             Please enter your details to access this romantic app
           </p>
-          
+
           <form onSubmit={handleVerifyPasskey} className="space-y-4">
             <div>
               <Label htmlFor="name">Your Name <span className="text-red-500">*</span></Label>
@@ -266,7 +199,7 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
                 required
               />
             </div>
-            
+
             <Button
               type="submit"
               className="w-full"
@@ -298,10 +231,10 @@ export function AppViewerWithPasskey({ appId }: AppViewerWithPasskeyProps) {
 
   return (
     <iframe
-      ref={iframeRef}
+      src={`/api/render/${app.id}${sessionId ? `?sessionId=${sessionId}` : ''}`}
       className="w-full h-screen border-0"
       title={app.title}
-      sandbox="allow-scripts allow-same-origin"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
     />
   )
 }

@@ -49,7 +49,23 @@ export async function POST(req: NextRequest) {
     const validatedData = createAppSchema.parse(body)
 
     const appId = crypto.randomUUID()
-    const slug = validatedData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    let slug = validatedData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+    // Ensure slug uniqueness
+    let isUnique = false
+    let counter = 1
+    let originalSlug = slug
+
+    while (!isUnique) {
+      const existingApp = await sql`SELECT id FROM apps WHERE slug = ${slug} LIMIT 1`
+      if (existingApp.length === 0) {
+        isUnique = true
+      } else {
+        slug = `${originalSlug}-${counter}`
+        counter++
+      }
+    }
+
     const passkey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     const now = new Date()
 

@@ -49,6 +49,7 @@ export default function Dashboard() {
   const handleAppCreated = (newApp: App) => {
     setApps([newApp, ...apps]);
     setShowNewAppModal(false);
+    router.push(`/editor/${newApp.id}`);
   };
 
   const handleAppDeleted = (appId: string) => {
@@ -56,7 +57,7 @@ export default function Dashboard() {
   };
 
   const handleAppPublished = (appId: string) => {
-    setApps(apps.map(app => 
+    setApps(apps.map(app =>
       app.id === appId ? { ...app, is_published: true } : app
     ));
   };

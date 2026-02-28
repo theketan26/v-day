@@ -65,3 +65,7 @@ CREATE INDEX idx_apps_creator_id ON apps(creator_id);
 CREATE INDEX idx_apps_slug ON apps(slug);
 CREATE INDEX idx_templates_theme ON templates(theme);
 CREATE INDEX idx_app_responses_app_id ON app_responses(app_id);
+
+ALTER TABLE "apps"
+ALTER COLUMN "template_id"
+SET DATA TYPE varchar USING "template_id"::varchar;
