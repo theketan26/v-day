@@ -45,7 +45,7 @@ The platform uses a powerful HTML-based template engine:
 - **Shareable URLs**: Clean, shareable links with embedded authentication
 - **Public Viewing**: Dedicated viewing endpoint at `/view-app/[id]`
 - **Render API**: Server-side rendering endpoint for generating final HTML experiences
-- **Privacy First**: Creators control who can access their romantic messages
+- **Privacy First**: Creators control who can access their romantic messages 
 
 ### Analytics & Tracking
 
